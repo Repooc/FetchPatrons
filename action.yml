@@ -1,5 +1,5 @@
 name: 'fetch-patrons'
-decription: 'Fetch a list of patrons from the Patreon API and and create a new file and directory to store the list in a Lua table.'
+description: 'Fetch a list of patrons from the Patreon API and and create a new file and directory to store the list in a Lua table.'
 branding:
   icon: package
   color: orange
