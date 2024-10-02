@@ -42,7 +42,6 @@ async function fetchTiers(pageUrl = `https://www.patreon.com/api/oauth2/v2/campa
   }
 }
 
-// Fetch patrons and apply optional filters
 async function fetchPatrons(
   pageUrl = `https://www.patreon.com/api/oauth2/v2/campaigns/${PATRON_CAMPAIGN_ID}/members?include=currently_entitled_tiers&fields%5Bmember%5D=campaign_lifetime_support_cents,currently_entitled_amount_cents,full_name,lifetime_support_cents,next_charge_date,note,patron_status,pledge_cadence&fields%5Btier%5D=patron_count,title`
 ) {
