@@ -7269,10 +7269,12 @@ module.exports = /*#__PURE__*/JSON.parse('{"application/1d-interleaved-parityfec
 var __webpack_exports__ = {};
 const fs = __nccwpck_require__(896);
 const axios = __nccwpck_require__(269);
+const path = __nccwpck_require__(928);
 
 const PATRON_CAMPAIGN_ID = process.env.PATRON_CAMPAIGN_ID;
 const PATRON_ACCESS_TOKEN = process.env.PATRON_ACCESS_TOKEN;
 const getTiers = process.env.GET_TIERS || false;
+const luaFilePath = process.env.FILE_PATH_AND_NAME || 'patrons.lua'; // you can change the file path and name here ex: './test/patrons.lua'
 
 if (!PATRON_CAMPAIGN_ID || !PATRON_ACCESS_TOKEN) {
   throw new Error('PATRON_CAMPAIGN_ID and PATRON_ACCESS_TOKEN must be set');
@@ -7337,7 +7339,6 @@ async function fetchPatrons(
 }
 
 function saveToFile(patrons) {
-  const luaFilePath = 'patreons.lua';
   const topPatron = {};
 
   // Build the Lua Members table
@@ -7370,6 +7371,12 @@ function saveToFile(patrons) {
       fs.writeFileSync(luaFilePath, luaData + '\n' + fileContent, 'utf8');
     }
   } else {
+    // Ensure the directory exists
+    const dir = path.dirname(luaFilePath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true }); // Create the directory recursively
+    }
+
     // Create the file with the new Members table
     fs.writeFileSync(luaFilePath, luaData, 'utf8');
   }
