@@ -1,0 +1,8 @@
+name: 'fetch-patrons'
+decription: 'Fetch Patron Data and place in a lua file and table.'
+branding:
+  icon: package
+  color: orange
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
