@@ -10,7 +10,7 @@ if (!PATRON_CAMPAIGN_ID || !PATRON_ACCESS_TOKEN) {
 }
 
 const headers = {
-  Authorization: `Bearer ${PATRON_ACCESS_TOKEN}`, // Replace with your actual token
+  Authorization: `Bearer ${PATRON_ACCESS_TOKEN}`,
   Accept: 'application/json',
   'User-Agent': 'axios/1.7.7',
 };
