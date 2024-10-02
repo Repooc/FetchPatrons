@@ -7270,20 +7270,21 @@ var __webpack_exports__ = {};
 const fs = __nccwpck_require__(896);
 const axios = __nccwpck_require__(269);
 
-const campaignId = process.env.PATRON_CAMPAIGN_ID;
-const accessToken = process.env.PATRON_ACCESS_TOKEN;
+const PATRON_CAMPAIGN_ID = process.env.PATRON_CAMPAIGN_ID;
+const PATRON_ACCESS_TOKEN = process.env.PATRON_ACCESS_TOKEN;
+const getTiers = process.env.GET_TIERS || false;
 
-if (!campaignId || !accessToken) {
+if (!PATRON_CAMPAIGN_ID || !PATRON_ACCESS_TOKEN) {
   throw new Error('PATRON_CAMPAIGN_ID and PATRON_ACCESS_TOKEN must be set');
 }
 
 const headers = {
-  Authorization: `Bearer ${accessToken}`, // Replace with your actual token
+  Authorization: `Bearer ${PATRON_ACCESS_TOKEN}`, // Replace with your actual token
   Accept: 'application/json',
   'User-Agent': 'axios/1.7.7',
 };
 
-async function fetchTiers(pageUrl = `https://www.patreon.com/api/oauth2/v2/campaigns/${campaignId}?include=tiers&fields%5Btier%5D=patron_count,title,amount_cents`) {
+async function fetchTiers(pageUrl = `https://www.patreon.com/api/oauth2/v2/campaigns/${PATRON_CAMPAIGN_ID}?include=tiers&fields%5Btier%5D=patron_count,title,amount_cents`) {
   let tiers = [];
 
   try {
@@ -7312,7 +7313,7 @@ async function fetchTiers(pageUrl = `https://www.patreon.com/api/oauth2/v2/campa
 
 // Fetch patrons and apply optional filters
 async function fetchPatrons(
-  pageUrl = `https://www.patreon.com/api/oauth2/v2/campaigns/${campaignId}/members?include=currently_entitled_tiers&fields%5Bmember%5D=campaign_lifetime_support_cents,currently_entitled_amount_cents,full_name,lifetime_support_cents,next_charge_date,note,patron_status,pledge_cadence&fields%5Btier%5D=patron_count,title`
+  pageUrl = `https://www.patreon.com/api/oauth2/v2/campaigns/${PATRON_CAMPAIGN_ID}/members?include=currently_entitled_tiers&fields%5Bmember%5D=campaign_lifetime_support_cents,currently_entitled_amount_cents,full_name,lifetime_support_cents,next_charge_date,note,patron_status,pledge_cadence&fields%5Btier%5D=patron_count,title`
 ) {
   const patrons = [];
 
@@ -7379,12 +7380,13 @@ function saveToFile(patrons) {
 
 async function main() {
   try {
-    const tiers = await fetchTiers();
-    if (tiers) {
-      //   saveToFile(tiers); // Save tiers to Lua file
+    if (getTiers) {
+      const tiers = await fetchTiers();
+      if (tiers) {
+        // saveToFile(tiers); // Save tiers to Lua file
+      }
     }
     const patrons = await fetchPatrons();
-    // const patrons, allIncludes = await fetchPatrons();
     if (patrons) {
       saveToFile(patrons); // Save patrons to Lua file
     }
