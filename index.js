@@ -113,12 +113,12 @@ async function main() {
     if (getTiers) {
       const tiers = await fetchTiers();
       if (tiers) {
-        // saveToFile(tiers); // Save tiers to Lua file
+        // saveToFile(tiers);
       }
     }
     const patrons = await fetchPatrons();
     if (patrons) {
-      saveToFile(patrons); // Save patrons to Lua file
+      saveToFile(patrons);
     }
   } catch (err) {
     console.error('Error fetching or saving patrons:', err);
