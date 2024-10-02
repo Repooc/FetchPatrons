@@ -68,7 +68,7 @@ async function fetchPatrons(
 }
 
 function saveToFile(patrons) {
-  const luaFilePath = 'patreons.lua';
+  const luaFilePath = 'patrons.lua';
   const topPatron = {};
 
   // Build the Lua Members table
