@@ -40,7 +40,7 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      MY_GH_TOKEN: ${{ secrets.MY_GH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -50,7 +50,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ env.GITHUB_TOKEN }}
+          token: ${{ env.MY_GH_TOKEN }}
           commit-message: 'build: update distribution'
           title: Update Distribution
           body: |
