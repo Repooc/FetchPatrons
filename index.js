@@ -81,7 +81,7 @@ async function fetchPatrons(
 function saveToFile(patrons) {
   const topPatron = {};
 
-  // Build the Lua Members table
+  // Build the Lua table
   let luaData = 'local Patrons = {\n';
 
   patrons.forEach((patron) => {
