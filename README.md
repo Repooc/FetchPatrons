@@ -50,7 +50,7 @@ jobs:
 
       # Step 2: Fetch and update the patron data using the custom action
       - name: Run Fetch Patrons
-        uses: Repooc/FetchPatrons@main
+        uses: Repooc/FetchPatrons@v1.0.1
 
       # Step 3: Create a pull request with the updated data
       - name: Create Pull Request
