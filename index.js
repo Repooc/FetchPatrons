@@ -31,11 +31,13 @@ async function fetchTiers(pageUrl = `https://www.patreon.com/api/oauth2/v2/campa
 
       // Check if there's a 'next' page
       pageUrl = response.data.links?.next;
+
       core.info(`Fetching ${response.data.included.length} tiers`);
     }
 
     // All patrons have been fetched at this point
     core.info('Total Tiers Fetched:', tiers.length);
+
     return tiers;
   } catch (error) {
     if (error.response) {
@@ -59,6 +61,7 @@ async function fetchPatrons(
       patrons.push(...response.data.data);
 
       pageUrl = response.data.links?.next;
+
       core.info(`Fetching ${response.data.data.length} patrons`);
     }
     core.info('Total Patrons Fetched:', patrons.length);
@@ -112,7 +115,8 @@ function saveToFile(patrons) {
       // Ensure the directory exists
       const dir = path.dirname(luaFilePath);
       if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true }); // Create the directory recursively
+        // Create the directory recursively
+        fs.mkdirSync(dir, { recursive: true });
       }
 
       // Create the file with the new Members table
