@@ -34718,11 +34718,13 @@ async function fetchTiers(pageUrl = `https://www.patreon.com/api/oauth2/v2/campa
 
       // Check if there's a 'next' page
       pageUrl = response.data.links?.next;
+
       core.info(`Fetching ${response.data.included.length} tiers`);
     }
 
     // All patrons have been fetched at this point
     core.info('Total Tiers Fetched:', tiers.length);
+
     return tiers;
   } catch (error) {
     if (error.response) {
@@ -34746,6 +34748,7 @@ async function fetchPatrons(
       patrons.push(...response.data.data);
 
       pageUrl = response.data.links?.next;
+
       core.info(`Fetching ${response.data.data.length} patrons`);
     }
     core.info('Total Patrons Fetched:', patrons.length);
@@ -34782,27 +34785,28 @@ function saveToFile(patrons) {
   luaData += '}\n';
 
   try {
-    // Check if the file exists and update the Members table accordingly
+    // Check if the file exists
     if (fs.existsSync(luaFilePath)) {
       const fileContent = fs.readFileSync(luaFilePath, 'utf8');
       const membersTableRegex = /local Patrons = {(?:\n*\s*{[^}]*},?)*\n*}/; // Regex to find the Patrons table
 
       if (membersTableRegex.test(fileContent)) {
-        // Replace the existing Patrons table
+        // Replace the existing table
         const updatedContent = fileContent.replace(membersTableRegex, luaData.trim());
         fs.writeFileSync(luaFilePath, updatedContent, 'utf8');
       } else {
-        // Prepend the new Members table to the existing content
+        // Prepend the new table to the existing content
         fs.writeFileSync(luaFilePath, luaData + '\n' + fileContent, 'utf8');
       }
     } else {
       // Ensure the directory exists
       const dir = path.dirname(luaFilePath);
       if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true }); // Create the directory recursively
+        // Create the directory recursively
+        fs.mkdirSync(dir, { recursive: true });
       }
 
-      // Create the file with the new Members table
+      // Create the file
       fs.writeFileSync(luaFilePath, luaData, 'utf8');
     }
     core.notice(`Patreon data saved to ${luaFilePath}`);
@@ -34814,6 +34818,7 @@ function saveToFile(patrons) {
 
 async function main() {
   try {
+    // Tiers are not yet implemented
     if (getTiers) {
       const tiers = await fetchTiers();
       if (tiers) {
