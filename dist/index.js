@@ -34755,6 +34755,7 @@ async function fetchPatrons(
 
     return patrons;
   } catch (error) {
+    // Let's fail here :P
     if (error.response) {
       core.debug(inspect('Error Response:', error.response.status, error.response.data));
       core.setFailed(error.response.status, error.response.data);
