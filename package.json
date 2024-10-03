@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "ncc build index.js -o dist --source-map --license LICENSE"
   },
-  "keywords": [],
+  "keywords": ["sponsors", "patrons", "tier", "save", "file"],
   "author": "Repooc <repooc@repoocreforged.dev>",
   "repository": "https://github.com/Repooc/FetchPatrons.git",
   "license": "MIT",
