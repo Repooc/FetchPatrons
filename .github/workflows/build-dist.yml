@@ -47,7 +47,9 @@ jobs:
         with:
           name: dist
           path: dist
+
       - name: Create Pull Request
+        id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ env.MY_GH_TOKEN }}
@@ -57,3 +59,15 @@ jobs:
             - Updates the distribution for changes on `main`
           branch: update-distribution
           delete-branch: true
+
+      - name: Approve Pull Request
+        uses: juliangruber/approve-pull-request-action@v2.0.6
+          with:
+            github-token: ${{ env.MY_GH_TOKEN }}
+            number: ${{ steps.cpr.outputs.pull-request-number }}
+
+      - name: Merge Pull Request
+        uses: juliangruber/merge-pull-request-action@v1.3.1
+          with:
+            github-token: ${{ env.MY_GH_TOKEN }}
+            number: ${{ steps.cpr.outputs.pull-request-number }}
