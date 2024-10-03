@@ -1,3 +1,5 @@
+const { inspect } = require('util');
+const core = require('@actions/core');
 const fs = require('fs');
 const axios = require('axios');
 const path = require('path');
@@ -29,17 +31,19 @@ async function fetchTiers(pageUrl = `https://www.patreon.com/api/oauth2/v2/campa
 
       // Check if there's a 'next' page
       pageUrl = response.data.links?.next;
-      console.log(`Fetching ${response.data.included.length} tiers`);
+      core.info(`Fetching ${response.data.included.length} tiers`);
     }
 
     // All patrons have been fetched at this point
-    console.log('Total Tiers Fetched:', tiers.length);
+    core.info('Total Tiers Fetched:', tiers.length);
     return tiers;
   } catch (error) {
     if (error.response) {
-      console.error('Error Response:', error.response.status, error.response.data);
+      core.debug('Error Response:', error.response.status, error.response.data);
+      core.setFailed(error.response.status, error.response.data);
     } else {
-      console.error('Error:', error.message);
+      core.debug('Error:', error.message);
+      core.setFailed(error.message);
     }
   }
 }
@@ -55,16 +59,18 @@ async function fetchPatrons(
       patrons.push(...response.data.data);
 
       pageUrl = response.data.links?.next;
-      console.log(`Fetching ${response.data.data.length} patrons`);
+      core.info(`Fetching ${response.data.data.length} patrons`);
     }
-    console.log('Total Patrons Fetched:', patrons.length);
+    core.info('Total Patrons Fetched:', patrons.length);
 
     return patrons;
   } catch (error) {
     if (error.response) {
-      console.error('Error Response:', error.response.status, error.response.data);
+      core.debug(inspect('Error Response:', error.response.status, error.response.data));
+      core.setFailed(error.response.status, error.response.data);
     } else {
-      console.error('Error:', error.message);
+      core.debug(inspect('Error Response:', error.response.status, error.response.data));
+      core.setFailed(error.message);
     }
   }
 }
@@ -81,38 +87,42 @@ function saveToFile(patrons) {
       topPatron.lifetime_support_cents = patron.attributes.lifetime_support_cents;
     }
   });
-  console.log(`Top patron: ${topPatron.full_name} with lifetime_support_cents: ${topPatron.lifetime_support_cents}`);
+  core.info(`Top patron: ${topPatron.full_name} with lifetime_support_cents: ${topPatron.lifetime_support_cents}`);
 
   patrons.forEach((patron) => {
     luaData += `  { name = "${patron.attributes.full_name}", isActive = ${patron.attributes.patron_status === 'active_patron' ? 'true' : 'false'}, isTopPatron = ${patron.attributes.full_name === topPatron.full_name ? 'true' : 'false'} },\n`;
   });
   luaData += '}\n';
 
-  // Check if the file exists and update the Members table accordingly
-  if (fs.existsSync(luaFilePath)) {
-    const fileContent = fs.readFileSync(luaFilePath, 'utf8');
-    const membersTableRegex = /local Patrons = {(?:\n*\s*{[^}]*},?)*\n*}/; // Regex to find the Patrons table
+  try {
+    // Check if the file exists and update the Members table accordingly
+    if (fs.existsSync(luaFilePath)) {
+      const fileContent = fs.readFileSync(luaFilePath, 'utf8');
+      const membersTableRegex = /local Patrons = {(?:\n*\s*{[^}]*},?)*\n*}/; // Regex to find the Patrons table
 
-    if (membersTableRegex.test(fileContent)) {
-      // Replace the existing Patrons table
-      const updatedContent = fileContent.replace(membersTableRegex, luaData.trim());
-      fs.writeFileSync(luaFilePath, updatedContent, 'utf8');
+      if (membersTableRegex.test(fileContent)) {
+        // Replace the existing Patrons table
+        const updatedContent = fileContent.replace(membersTableRegex, luaData.trim());
+        fs.writeFileSync(luaFilePath, updatedContent, 'utf8');
+      } else {
+        // Prepend the new Members table to the existing content
+        fs.writeFileSync(luaFilePath, luaData + '\n' + fileContent, 'utf8');
+      }
     } else {
-      // Prepend the new Members table to the existing content
-      fs.writeFileSync(luaFilePath, luaData + '\n' + fileContent, 'utf8');
-    }
-  } else {
-    // Ensure the directory exists
-    const dir = path.dirname(luaFilePath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true }); // Create the directory recursively
-    }
+      // Ensure the directory exists
+      const dir = path.dirname(luaFilePath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true }); // Create the directory recursively
+      }
 
-    // Create the file with the new Members table
-    fs.writeFileSync(luaFilePath, luaData, 'utf8');
+      // Create the file with the new Members table
+      fs.writeFileSync(luaFilePath, luaData, 'utf8');
+    }
+    core.notice(`Patreon data saved to ${luaFilePath}`);
+  } catch (error) {
+    core.debug(inspect(error));
+    core.setFailed(error.message);
   }
-
-  console.log('Patreon data saved to patreons.lua');
 }
 
 async function main() {
@@ -127,8 +137,9 @@ async function main() {
     if (patrons) {
       saveToFile(patrons);
     }
-  } catch (err) {
-    console.error('Error fetching or saving patrons:', err);
+  } catch (error) {
+    core.debug(inspect(error));
+    core.setFailed(error.message);
   }
 }
 
