@@ -119,7 +119,7 @@ function saveToFile(patrons) {
         fs.mkdirSync(dir, { recursive: true });
       }
 
-      // Create the file with the new Members table
+      // Create the file
       fs.writeFileSync(luaFilePath, luaData, 'utf8');
     }
     core.notice(`Patreon data saved to ${luaFilePath}`);
@@ -131,6 +131,7 @@ function saveToFile(patrons) {
 
 async function main() {
   try {
+    // Tiers are nyi
     if (getTiers) {
       const tiers = await fetchTiers();
       if (tiers) {
