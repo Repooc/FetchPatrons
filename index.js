@@ -98,17 +98,17 @@ function saveToFile(patrons) {
   luaData += '}\n';
 
   try {
-    // Check if the file exists and update the Members table accordingly
+    // Check if the file exists
     if (fs.existsSync(luaFilePath)) {
       const fileContent = fs.readFileSync(luaFilePath, 'utf8');
       const membersTableRegex = /local Patrons = {(?:\n*\s*{[^}]*},?)*\n*}/; // Regex to find the Patrons table
 
       if (membersTableRegex.test(fileContent)) {
-        // Replace the existing Patrons table
+        // Replace the existing table
         const updatedContent = fileContent.replace(membersTableRegex, luaData.trim());
         fs.writeFileSync(luaFilePath, updatedContent, 'utf8');
       } else {
-        // Prepend the new Members table to the existing content
+        // Prepend the new table to the existing content
         fs.writeFileSync(luaFilePath, luaData + '\n' + fileContent, 'utf8');
       }
     } else {
@@ -131,7 +131,7 @@ function saveToFile(patrons) {
 
 async function main() {
   try {
-    // Tiers are nyi
+    // Tiers are not yet implemented
     if (getTiers) {
       const tiers = await fetchTiers();
       if (tiers) {
