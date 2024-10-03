@@ -62,12 +62,12 @@ jobs:
 
       - name: Approve Pull Request
         uses: juliangruber/approve-pull-request-action@v2.0.6
-          with:
-            github-token: ${{ env.MY_GH_TOKEN }}
-            number: ${{ steps.cpr.outputs.pull-request-number }}
+        with:
+          github-token: ${{ env.MY_GH_TOKEN }}
+          number: ${{ steps.cpr.outputs.pull-request-number }}
 
       - name: Merge Pull Request
         uses: juliangruber/merge-pull-request-action@v1.3.1
-          with:
-            github-token: ${{ env.MY_GH_TOKEN }}
-            number: ${{ steps.cpr.outputs.pull-request-number }}
+        with:
+          github-token: ${{ env.MY_GH_TOKEN }}
+          number: ${{ steps.cpr.outputs.pull-request-number }}
