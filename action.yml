@@ -3,6 +3,31 @@ description: 'Fetch a list of patrons from the Patreon API and and create a new 
 branding:
   icon: package
   color: orange
+inputs:
+  patron_campaign_id:
+    description: 'The Patreon campaign ID to fetch patrons from.'
+    required: true
+    default: ''
+  patron_access_token:
+    description: 'The access token for the Patreon API.'
+    required: true
+    default: ''
+  get_tiers:
+    description: 'Whether to fetch tiers. Accepts true or false.'
+    required: false
+    default: 'false'
+  file_path:
+    description: 'The directory path to save the output file.'
+    required: false
+    default: './'
+  file_name:
+    description: 'The name of the output file, e.g., patrons.lua or patrons.json.'
+    required: false
+    default: 'patrons.lua'
+  output_format:
+    description: 'The output format of the file. Options: lua or json.'
+    required: false
+    default: 'lua'
 runs:
   using: 'node20'
   main: 'dist/index.js'
