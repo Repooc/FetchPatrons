@@ -15,7 +15,7 @@
     "url": "https://github.com/Repooc/FetchPatrons/issues"
   },
   "dependencies": {
-    "@actions/core": "^1.11.0",
+    "@actions/core": "^1.11.1",
     "axios": "^1.7.7"
   },
   "devDependencies": {
